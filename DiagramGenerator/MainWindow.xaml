@@ -91,7 +91,7 @@
 
             <StackPanel Grid.Column="2">
                 <Border Grid.Column="2" Height="502" Width="502" BorderBrush="Black" BorderThickness="1" Margin="0,10,0,0" VerticalAlignment="Top">
-                    <Canvas Background="White" x:Name="diagramCanvas" HorizontalAlignment="Center" VerticalAlignment="Center" Height="500" Width="500"/>
+                    <Canvas Background="White" x:Name="diagramCanvas" HorizontalAlignment="Center" VerticalAlignment="Center" Height="500" Width="500" MouseMove="diagramCanvas_MouseMove" MouseLeave="diagramCanvas_MouseLeave"/>
                 </Border>
                 <Button x:Name="clearDiagram" Content="Clear Diagram" Click="clearDiagram_Click" Width="100" HorizontalAlignment="Right" Margin="0,5,10,0"/>
             </StackPanel>

@@ -15,7 +15,6 @@ namespace DiagramGenerator {
         double textMargin = 10.0;
         double axisMargin = 50.0;
         double tickSize = 10.0;
-        bool sortX = true;
 
 
         // Calculated
@@ -47,17 +46,17 @@ namespace DiagramGenerator {
 
 
         /// <summary>
-        /// Create and Draw X-axis
+        /// Create and Draw Y-axis
         /// </summary>
         /// <param name="diagramCanvas"></param>
         /// <param name="divisions"></param>
         /// <param name="intervalValue"></param>
-        public void CreateXAxis(double divisions, double intervalValue) {
+        public void CreateYAxis(double divisions, double intervalValue) {
 
             // Calculate distance and scale
             double axisLength = diagramCanvas.Height - axisMargin * 2;
             double intervalLength = axisLength / divisions;
-            xScale = intervalLength / intervalValue;
+            yScale = intervalLength / intervalValue;
 
             // Add axis
             Line line = new Line();
@@ -65,7 +64,7 @@ namespace DiagramGenerator {
             line.X2 = axisMargin;
             line.Y1 = axisMargin;
             line.Y2 = diagramCanvas.Height - axisMargin;
-            line.Name = "Xaxis";
+            line.Name = "Yaxis";
             line.Stroke = Brushes.Black;
             line.StrokeThickness = 2;
             Canvas.SetZIndex(line, 11);
@@ -80,7 +79,7 @@ namespace DiagramGenerator {
                 line.X2 = axisMargin + tickSize / 2;
                 line.Y1 = intervalDistance;
                 line.Y2 = intervalDistance;
-                line.Name = string.Concat("X", i);
+                line.Name = string.Concat("Y", i);
                 line.Stroke = Brushes.Black;
                 Canvas.SetZIndex(line, 12);
                 diagramCanvas.Children.Add(line);
@@ -101,17 +100,17 @@ namespace DiagramGenerator {
 
 
         /// <summary>
-        /// Create and Draw Y-axis
+        /// Create and Draw X-axis
         /// </summary>
         /// <param name="diagramCanvas"></param>
         /// <param name="divisions"></param>
         /// <param name="intervalValue"></param>
-        public void CreateYAxis(double divisions, double intervalValue) {
+        public void CreateXAxis(double divisions, double intervalValue) {
 
             // Calculate distance and scale
             double axisLength = diagramCanvas.Width - axisMargin * 2;
             double intervalLength = axisLength / divisions;
-            yScale = intervalLength / intervalValue;
+            xScale = intervalLength / intervalValue;
 
             // Add axis
             Line line = new Line();
@@ -119,7 +118,7 @@ namespace DiagramGenerator {
             line.X2 = diagramCanvas.Width - axisMargin;
             line.Y1 = diagramCanvas.Height - axisMargin;
             line.Y2 = diagramCanvas.Height - axisMargin;
-            line.Name = "Yaxis";
+            line.Name = "Xaxis";
             line.Stroke = Brushes.Black;
             line.StrokeThickness = 2;
             Canvas.SetZIndex(line, 12);
@@ -134,7 +133,7 @@ namespace DiagramGenerator {
                 line.X2 = intervalDistance;
                 line.Y1 = diagramCanvas.Height - axisMargin - tickSize / 2;
                 line.Y2 = diagramCanvas.Height - axisMargin + tickSize / 2;
-                line.Name = string.Concat("Y", i);
+                line.Name = string.Concat("X", i);
                 line.Stroke = Brushes.Black;
                 //line.StrokeMiterLimit = 0;
                 Canvas.SetZIndex(line, 12);
@@ -173,11 +172,6 @@ namespace DiagramGenerator {
 
                 if (!points.Contains(point)) {
                     points.Add(point);
-                    if (sortX) {
-                        points = points.OrderBy(o => o.X).ToList();
-                    } else {
-                        points = points.OrderBy(o => o.Y).ToList();
-                    }
                     ReDrawPoints();
                 }
                 return;
@@ -236,7 +230,7 @@ namespace DiagramGenerator {
                 ellipse.Name = string.Concat("Node_", i);
                 ellipse.Fill = Brushes.White;
                 ToolTip toolTip = new ToolTip();
-                toolTip.Content = string.Concat("(", point.X.ToString(), ",", point.Y.ToString(), ")");
+                toolTip.Content = string.Concat("Point (", point.X.ToString(), ",", point.Y.ToString(), ")");
                 ellipse.ToolTip = toolTip;
                 ellipse.MouseEnter += DisplayToolTip;
                 ellipse.MouseLeave += HideToolTip;

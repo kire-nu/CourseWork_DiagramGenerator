@@ -26,22 +26,34 @@ namespace DiagramGenerator
         double xIntervalValue = 0.0;
         double yIntervalValue = 0.0;
 
+        ToolTip diagramToolTip;
+        Point diagramPoint;
+
 
         public MainWindow() {
             InitializeComponent();
             inputPointX.IsEnabled = false;
             inputPointY.IsEnabled = false;
             addPoint.IsEnabled = false;
-            //Debug();
+            Debug();
+            diagramToolTip = new ToolTip();
+            diagramPoint = new Point(0, 0);
+        //    ToolTip toolTip = new ToolTip();
+        //    toolTip.Content = string.Empty;
+        //    diagramCanvas.ToolTip = toolTip;
+        //    diagramCanvas.MouseEnter += DisplayToolTip;
+        //    diagramCanvas.MouseLeave += HideToolTip;
+
+
         }
 
         private void Debug() {
             inputTitle.Text = "Test Diagram";
             inputXDivisions.Text = "5";
             inputYDivisions.Text = "20";
-            inputXIntervalValue.Text = "20";
+            inputXIntervalValue.Text = "50";
             inputYIntervalValue.Text = "5";
-            CreateNewDiagram();
+            CreateDiagram_Click(null, null);
             AddNewPoint(0, 0);
             AddNewPoint(20, 20);
             AddNewPoint(10, 20);
@@ -49,7 +61,7 @@ namespace DiagramGenerator
         }
 
         /// <summary>
-        /// Create new diagram and transpose from X to Y
+        /// Create new diagram
         /// </summary>
         /// <returns></returns>
         private bool CreateNewDiagram() {
@@ -71,7 +83,7 @@ namespace DiagramGenerator
                 diagramCanvas.Children.Clear();
                 return false;
             }
-            CreateYAxis(xDivisions, xIntervalValue);
+            CreateXAxis(xDivisions, xIntervalValue);
 
             if (!int.TryParse(inputYDivisions.Text, out yDivisions)) {
                 MessageBox.Show("Y-axis divisions needs to be a number", "Error!");
@@ -86,7 +98,7 @@ namespace DiagramGenerator
                 diagramCanvas.Children.Clear();
                 return false;
             }
-            CreateXAxis(yDivisions, yIntervalValue);
+            CreateYAxis(yDivisions, yIntervalValue);
 
             return true;
         }
@@ -201,16 +213,55 @@ namespace DiagramGenerator
             Environment.Exit(0);
         }
 
+
         private void menuItemSortX_Click(object sender, RoutedEventArgs e) {
-            sortX = true;
             points = points.OrderBy(o => o.X).ToList();
             ReDrawPoints();
         }
 
         private void menuItemSortY_Click(object sender, RoutedEventArgs e) {
-            sortX = false;
             points = points.OrderBy(o => o.Y).ToList();
             ReDrawPoints();
+        }
+
+        /// <summary>
+        /// Show location of mouse on canvas
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void diagramCanvas_MouseMove(object sender, MouseEventArgs e) {
+            // Get mouse position and check that it is within diagram extent
+            Point point = TranslatePoint(Mouse.GetPosition(this), diagramCanvas);
+            if ((Math.Min(point.X, point.Y)>axisMargin) && (Math.Max(point.X, point.Y)<diagramCanvas.Height-axisMargin)) {
+
+                if ((xScale>0) && (yScale>0)) {
+                    // convert to mouse position to diagram position
+                    point.X = (int)((point.X - axisMargin) / xScale);
+                    point.Y = (int)(yIntervalValue * yDivisions - (point.Y - axisMargin) / yScale);
+                    // If moved, show new location
+                    if ((point.X != diagramPoint.X) && (point.Y != diagramPoint.Y)) {
+                        diagramPoint.X = point.X;
+                        diagramPoint.Y = point.Y;
+                        diagramToolTip.IsOpen = false;
+                        diagramToolTip = new ToolTip();
+                        diagramToolTip.Content = string.Concat("(", diagramPoint.X.ToString(), ",", diagramPoint.Y.ToString(), ")");
+                        diagramToolTip.IsOpen = true;
+                    }
+                } else {
+                    diagramToolTip.IsOpen = false;
+                }
+            } else {
+                diagramToolTip.IsOpen = false;
+            }
+        }
+
+        /// <summary>
+        /// Remove point location if outside canvas
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void diagramCanvas_MouseLeave(object sender, MouseEventArgs e) {
+            diagramToolTip.IsOpen = false;
         }
     }
 }
