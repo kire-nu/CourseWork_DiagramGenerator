@@ -35,16 +35,9 @@ namespace DiagramGenerator
             inputPointX.IsEnabled = false;
             inputPointY.IsEnabled = false;
             addPoint.IsEnabled = false;
-            Debug();
             diagramToolTip = new ToolTip();
             diagramPoint = new Point(0, 0);
-        //    ToolTip toolTip = new ToolTip();
-        //    toolTip.Content = string.Empty;
-        //    diagramCanvas.ToolTip = toolTip;
-        //    diagramCanvas.MouseEnter += DisplayToolTip;
-        //    diagramCanvas.MouseLeave += HideToolTip;
-
-
+            //Debug();
         }
 
         private void Debug() {
